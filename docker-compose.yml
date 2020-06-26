@@ -1,0 +1,29 @@
+version: "3"
+
+services:
+    db:
+        image: postgres
+        container_name: db
+        volumes: 
+            - /data
+        environment:
+            POSTGRES_USER: ${DB_USER}
+            POSTGRES_PASSWORD: ${DB_PASS}
+            POSTGRES_DATABASE: ${DB_DATABASE}
+        ports: 
+            - "5432:5432"
+        expose: 
+            - 5432
+    app:
+        build: .
+        command: sh -c "npm install && npm start"
+        ports:
+            - ${PORT}:${PORT}
+        volumes:
+            - .:/usr/app
+        environment:
+            PORT: ${PORT}
+            HOST: ${HOST}
+            DB_HOST: db
+        links: 
+            - db
